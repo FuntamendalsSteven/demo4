@@ -3,6 +3,50 @@ title: "demo4"
 output: html_document
 ---
 
-By Steven Tang
+By Steven Tang \
 Updated 20260117
+
+# Downloading Files
+
+## Installing to read Excel files:
+```{r}
+# install.packages('rio') # installs necessary package for reading Excel files
+```
+
+## Reading cleaned and formatted data
+```{r}
+# opening clean and formatted files from previous assignment (file in Excel)
+maternalmortalitylink="https://github.com/FuntamendalsSteven/demo3/raw/refs/heads/main/dataCleaned/maternalmortality.csv" # assigns url link to string variable named, 'maternalmortalitylink'
+
+infantmortalitylink="https://github.com/FuntamendalsSteven/demo3/raw/refs/heads/main/dataCleaned/infantmortality.csv" # assigns url link to string variable named, 'infantmortalitylink'
+
+lifeexpectancylink="https://github.com/FuntamendalsSteven/demo3/raw/refs/heads/main/dataCleaned/lifeexpectancy.csv" # assigns url link to string variable named, 'lifeexpectancylink'
+
+# library(rio) # package needed
+maternalmortality=rio::import(file = maternalmortalitylink) #object that will hold the result # Maternal_Mortality is an object that will hold data, a data frame
+infantmortality=rio::import(file = infantmortalitylink) #object that will hold the result # Maternal_Mortality is an object that will hold data, a data frame
+lifeexpectancy=rio::import(file = lifeexpectancylink) #object that will hold the result # Maternal_Mortality is an object that will hold data, a data frame
+```
+
+Let's check the structure of the data.
+```{r}
+str(maternalmortality) # shows internal structure of maternalmortality
+str(infantmortality) # shows internal structure of infantmortality
+str(lifeexpectancy) # shows internal structure of lifeexpectancy
+```
+Notice that there is a column named 'V1' in each data frame that is unnecessary.
+
+Let's remove the unnecessary column in each data frame.
+```{r}
+maternalmortality <- maternalmortality[, -1]
+infantmortality <- infantmortality[, -1]
+lifeexpectancy <- lifeexpectancy[, -1]
+```
+
+Let's check the structure of the modifed data.
+```{r}
+str(maternalmortality) # shows internal structure of maternalmortality
+str(infantmortality) # shows internal structure of infantmortality
+str(lifeexpectancy) # shows internal structure of lifeexpectancy
+```
 
