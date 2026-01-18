@@ -56,7 +56,7 @@ Before we merge the data frames, we can observe that all data frames have a comm
 
 I will use outer join merge here to preserve as much data as possible, and allow empty values (NA)
 ```{r}
-allcontent <- merge(maternalmortality, infantmortality, by = "name", all = TRUE) # merge maternalmortality and infantmortality (outer join)
+allcontent <- merge(maternalmortality, infantmortality, by = "name", all = TRUE) # merge maternalmortality and infantmortality (all = TRUE means outer join)
 str(allcontent) # view the structure of the data frame post merge
 ```
 
@@ -84,11 +84,11 @@ str(allcontent) # check the resulting structure of the data frame, we verify it 
 
 We move onto merging allcontent with lifeexpectancy, again with name as the unique key and with outer join, allowing for "NA" values.
 ```{r}
-allcontent <- merge(allcontent, lifeexpectancy, by = "name", all = TRUE) # merge allcontent and lifeexpectancy (outer join)
+allcontent <- merge(allcontent, lifeexpectancy, by = "name", all = TRUE) # merge allcontent and lifeexpectancy (all - TRUE means outer join)
 str(allcontent) # view the structure of the data frame post merge
 ```
 
-We see that there is a region.y column and a region colunmn, so we check for differences, and remove the redundant column.
+We see that there is a region.y column and a region column, so we check for differences, and remove the redundant column.
 ```{r}
 sameregion <- ifelse(allcontent$region.y == allcontent$region, "Same", "Different") # create a vector storing whether a row has different values for region.y vs region
 
@@ -119,14 +119,20 @@ str(data) # views internal structure of data
 
 # Aggregating
 
-Let's aggregate the data by region as assigned. This means simplifying and summarizing the data. A suitable function is the mean.
+Let's aggregate the data by region as assigned. This means simplifying and summarizing the data. A suitable function is the mean. Let's apply the mean to all columns except the name column aggregated by region.
 ```{r}
 regionaverage <- aggregate(data=allcontent, cbind(maternaldeathsper100000livebirths, infantdeathsper1000livebirths, years)~region, mean) # create a new data frame for data average aggregated by region
 regionaverage # view the data averaged by region
 ```
 
+Let's save the result into its own csv file.
+```{r}
+write.csv(regionaverage[,], "regionaverage.csv", row.names = FALSE) # saves regionaverage[,] (regionaverage data frame, all rows and columns) to csv file named "regionaverage.csv" without row.names (X column numbered 1 - 10)
+```
 
-
-
-
+We can verify whether the file saved correctly.
+```{r}
+data <- read.csv("regionaverage.csv") # reads csv file "regionaverage.csv" to dataframe object called data
+str(data) # views internal structure of data
+```
 
