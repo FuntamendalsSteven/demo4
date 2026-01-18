@@ -50,3 +50,63 @@ str(infantmortality) # shows internal structure of infantmortality
 str(lifeexpectancy) # shows internal structure of lifeexpectancy
 ```
 
+# Merging
+
+Before we merge the data frames, we can observe that all data frames have a common name and region column. The region is categorical, however, the name is unique. Let's use the name column as our unique key identifier.
+
+I will use outer join merge here to preserve as much data as possible, and allow empty values (NA)
+```{r}
+allcontent <- merge(maternalmortality, infantmortality, by = "name", all = TRUE) # merge maternalmortality and infantmortality (outer join)
+str(allcontent) # view the structure of the data frame post merge
+```
+
+Notice there is a region.x and a region.y column. Let us examine whether there are differences between the two columns.
+```{r}
+sameregion <- ifelse(allcontent$region.x == allcontent$region.y, "Same", "Different") # create a vector storing whether a row has different values for region.x vs region.y
+
+for (sameness in sameregion) { # for each value in the vector
+  if (is.na(sameness) || sameness != "Same") { # if a "NA" value or not "Same" value
+    print(sameness) # print sameness value
+  }
+}
+```
+Since only "NA's" print, we are sure that there are no differences, except for "NA" values. These values appear in region.x, thus we can delete the region.x column due to redundancy.
+```{r}
+allcontent$region.x <- NULL # delete region.x column
+str(allcontent) # check the resulting structure of the data frame, we verify it is what we want.
+```
+
+We move onto merging allcontent with lifeexpectancy, again with name as the unique key and with outer join, allowing for "NA" values.
+```{r}
+allcontent <- merge(allcontent, lifeexpectancy, by = "name", all = TRUE) # merge allcontent and lifeexpectancy (outer join)
+str(allcontent) # view the structure of the data frame post merge
+```
+
+We see that there is a region.y column and a region colunmn, so we check for differences, and remove the redundant column.
+```{r}
+sameregion <- ifelse(allcontent$region.y == allcontent$region, "Same", "Different") # create a vector storing whether a row has different values for region.y vs region
+
+for (sameness in sameregion) { # for each value in the vector
+  if (is.na(sameness) || sameness != "Same") { # if a "NA" value or not "Same" value
+    print(sameness) # print sameness value
+  }
+}
+```
+
+Nothing prints so we can remove the redundant column. Let's remove region.y.
+```{r}
+allcontent$region.y <- NULL # delete region.x column
+str(allcontent) # check the resulting structure of the data frame, we verify it is what we want.
+```
+Now we have successfully merged all three files into one.
+
+We now save it into its own file.
+```{r}
+write.csv(allcontent[,], "allcontent.csv", row.names = FALSE) # saves allcontent[,] (allcontent data frame, all rows and columns) to csv file named "allcontent.csv" without row.names (X column numbered 1 - 227)
+```
+
+We can verify whether the file saved correctly.
+```{r}
+data <- read.csv("allcontent.csv") # reads csv file "allcontent.csv" to dataframe object called data
+str(data) # views internal structure of data
+```
