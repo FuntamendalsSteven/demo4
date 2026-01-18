@@ -136,3 +136,23 @@ data <- read.csv("regionaverage.csv") # reads csv file "regionaverage.csv" to da
 str(data) # views internal structure of data
 ```
 
+# Reshaping
+
+Let's pivot the data frame we obtained as a result of the merge from wide to long.
+```{r}
+library(tidyr) # package needed for pivoting
+cpivot <- c("maternaldeathsper100000livebirths", "infantdeathsper1000livebirths", "years") # create vector of columns to pivot, cannot pivot if columns are not same type so name and region are excluded
+allcontentlong <- tidyr::pivot_longer(data = allcontent, cols = cpivot, names_to = "variable", values_to = "value", values_drop_na = TRUE) # pivots allcontent data frame, affecting columns in cpivot, changing column names to variable and adding value column. values_drop_na = TRUE to exclude NA values
+allcontentlong # view resulting data frame
+```
+
+Let's save the result.
+```{r}
+write.csv(allcontentlong[,], "allcontentlong.csv", row.names = FALSE) # saves allcontentlong[,] (allcontentlong data frame, all rows and columns) to csv file named "allcontentlong.csv" without row.names (X column numbered 1 - 650)
+```
+
+We can verify whether the file saved correctly.
+```{r}
+data <- read.csv("allcontentlong.csv") # reads csv file "allcontentlong.csv" to dataframe object called data
+str(data) # views internal structure of data
+```
