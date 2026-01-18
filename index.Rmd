@@ -60,6 +60,12 @@ allcontent <- merge(maternalmortality, infantmortality, by = "name", all = TRUE)
 str(allcontent) # view the structure of the data frame post merge
 ```
 
+Let's modify some column names for clarity.
+```{r}
+names(allcontent)[names(allcontent) == "deathsper100000livebirths"] <- "maternaldeathsper100000livebirths"
+names(allcontent)[names(allcontent) == "deathsper1000livebirths"] <- "infantdeathsper1000livebirths"
+```
+
 Notice there is a region.x and a region.y column. Let us examine whether there are differences between the two columns.
 ```{r}
 sameregion <- ifelse(allcontent$region.x == allcontent$region.y, "Same", "Different") # create a vector storing whether a row has different values for region.x vs region.y
@@ -110,3 +116,17 @@ We can verify whether the file saved correctly.
 data <- read.csv("allcontent.csv") # reads csv file "allcontent.csv" to dataframe object called data
 str(data) # views internal structure of data
 ```
+
+# Aggregating
+
+Let's aggregate the data by region as assigned. This means simplifying and summarizing the data. A suitable function is the mean.
+```{r}
+regionaverage <- aggregate(data=allcontent, cbind(maternaldeathsper100000livebirths, infantdeathsper1000livebirths, years)~region, mean) # create a new data frame for data average aggregated by region
+regionaverage # view the data averaged by region
+```
+
+
+
+
+
+
